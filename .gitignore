@@ -1,0 +1,4 @@
+node_modules/path
+node_modules/.bin
+node_modules/express
+node_modules/mongoose

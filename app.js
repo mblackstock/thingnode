@@ -24,6 +24,8 @@ var EventModel = require('./models/events.js');
 
 // controllers
 
+var controllers = require('./bin/controllers.js');
+
 app.get('/api', function (req, res) {
   res.send('ThingBroker API is running');
 });
@@ -51,42 +53,10 @@ app.get('/api/things/:id', function (req, res) {
 });
 
 // Create a thing
-app.post('/api/things', function (req, res) {
-  var thing;
-  console.log("POST: ");
-  console.log(req.body);
-  thing = new ThingModel({
-    name: req.body.name,
-    description: req.body.description,
-    following: req.body.following,
-    followedBy: req.body.followedBy,
-    metadata: req.body.metadata
-  });
-
-  thing.save(function (err, thing) {
-    if (!err) {
-      return res.send(thing);
-    } else {
-      return res.send(err);
-    }
-  });
-//  return res.send(thing);
-});
+app.post('/api/things', controllers.createThing);
 
 // delete a thing
-app.delete('/api/things/:id', function(req, res) {
-	return ThingModel.findById(req.params.id, function (err, thing) {
-   return product.remove(function (err) {
-     if (!err) {
-      console.log("removed");
-      // TODO: propery status
-      return res.send('');
-    } else {
-     return res.send(err);
-   }
- });
- });
-});
+app.delete('/api/things/:id', controllers.deleteThing);
 
 // send event
 app.post('/api/things/:thingId/events', function(req, res) {
