@@ -31,26 +31,10 @@ app.get('/api', function (req, res) {
 });
 
 // List things
-app.get('/api/things', function (req, res) {
-  return ThingModel.find(function (err, things) {
-    if (!err) {
-      return res.send(things);
-    } else {
-      return console.log(err);
-    }
-  });
-});
+app.get('/api/things', controllers.getThings);
 
 // Single thing
-app.get('/api/things/:id', function (req, res) {
-  return ThingModel.findById(req.params.id, function (err, thing) {
-    if (!err) {
-      return res.send(thing);
-    } else {
-      return console.log(err);
-    }
-  });
-});
+app.get('/api/things/:id', controllers.getThing);
 
 // Create a thing
 app.post('/api/things', controllers.createThing);
@@ -59,58 +43,13 @@ app.post('/api/things', controllers.createThing);
 app.delete('/api/things/:id', controllers.deleteThing);
 
 // send event
-app.post('/api/things/:thingId/events', function(req, res) {
-	var thingId = req.params.thingId;
-  console.log("POST: ");
-  console.log(req.body);
-
-  var event = new EventModel({
-    thingId: thingId,
-    timestamp: new Date().getTime(),
-    data: req.body
-  });
-
-  // in case people are waiting for real time events
-  rtevents.sendRealTime(thingId, event);
-
-  // save event for later
-  event.save(function (err, thing) {
-    if (!err) {
-      return res.send(thing);
-    } else {
-      return res.send(err);
-    }
-  });
-});
+app.post('/api/things/:thingId/events', controllers.sendEvent);
 
 // get thing events
-app.get('/api/things/:thingId/events', function (req, res) {
-
-  var thingId = req.params.thingId;
-  var timestamp = req.query.timestamp || 0;
-
-
-  // TODO: get real time events only if there are none in the db
-
-  if (req.param('realtime') == 'true') {
-    rtevents.getRealTime(thingId, timestamp, req, res);
-  } else {
-    return EventModel.find({'thingId': thingId},
-      function (err, events) {
-        if (!err) {
-          return res.send(events);
-        } else {
-          return res.send(err);
-        }
-      }); 
-  }
-});
-
+app.get('/api/things/:thingId/events', controllers.getEvents);
 
 // Connect to our Database
 mongoose.connect('mongodb://localhost/ecomm_database');
-
-// can we set a timer to clean up?
 
 // Launch server
 app.listen(3000);

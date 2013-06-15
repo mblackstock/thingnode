@@ -232,7 +232,6 @@ exports.sendRealTime = function(thingId, event) {
   }
 }
 
-// TODO: set a timer to clean up event buffers.
 // if the lease has expired, dump event buffers.
 setInterval(function(){
   console.log('buffer clean up: '+new Date());

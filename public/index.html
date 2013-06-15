@@ -3,16 +3,29 @@
   <head>
     <meta charset="utf-8">
     <title>API index</title>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script>
+          $(document).ready(function(){
+        $("#getThings").click(function(){
+          $.getJSON("api/things",function(json){
+              $.each(json, function(i, thing) {
+                $("#getThingsResult").append($("<li><a href=\"api/things/"+thing._id+"\">"+thing.name+" ("+thing._id+")</a></li>"));
+              })
+          });
+        });
+      });
+    </script>
   </head>
   <body>
     <section>
       <h1>Thing Node API<h1>
         <h2>Nouns...</h2>
       <p>
-        <a href="api/things">/api/things<a><br>
-        /things/:id
+        <a id="getThings" href="#">/api/things<a><br>
+        <div id="getThingsResult"></div><br>
+        <a href="api/things">/api/things/:thingid<a><br>
       </p>
     </section>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
   </body>
 </html>
